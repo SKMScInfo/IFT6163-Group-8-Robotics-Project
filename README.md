@@ -26,6 +26,8 @@ The following setup is to be followed for making the project work on MacOS
 5. To run SLAM for out setup do :- LIBGL_ALWAYS_SOFTWARE=1 ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py slam:=true nav2:=true rviz:=true 
 It's important to use LIBGL_ALWAYS_SOFTWARE=1, as otherwise OPENGL was cause errors because of 2.3 version being needed, but VMs on MACOS only supporting till 2.1
 
+RTAB-Map repo (SLAM): https://github.com/introlab/rtabmap 
+
 
 
 
