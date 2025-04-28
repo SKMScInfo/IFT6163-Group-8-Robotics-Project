@@ -16,3 +16,37 @@ We are gonna test the simulations of gazebo with turtlebot. Basically for naviga
     - IL and MBRL are offline and online learning tasks. So we need to see how to correlate the expert data IL is trained on and the number of trajectories used to train MBRL
 
 4. Also we are using dreamerv3 isntead of dreamer as the latter as out of date libraries. So we need to update the paper with the new equations. Also for DADAgger more mathematics needs to be explained.
+
+
+The following setup is to be followed for making the project work on MacOS
+1. Install UTM
+2. Add Ubuntu 22.02 image to UTM ( use virtio-gpu-gl-pci in the display settings when running the VM, it supports GPU, also may have to wait for 10 secons for the display output to come )
+3. Install ros2-humble-desktop and ignition fortess binary installations  following  the official pages
+4. Install turblebot4 from here https://turtlebot.github.io/turtlebot4-user-manual/software/turtlebot4_simulator.html
+5. To run SLAM for out setup do :- LIBGL_ALWAYS_SOFTWARE=1 ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py slam:=true nav2:=true rviz:=true 
+It's important to use LIBGL_ALWAYS_SOFTWARE=1, as otherwise OPENGL was cause errors because of 2.3 version being needed, but VMs on MACOS only supporting till 2.1
+
+Fixing low RTF in gazebo while using a google cloud VM: 
+
+1. Add these to your .bashrc 
+2. Set environment variables: 
+```
+export LD_LIBRARY_PATH=/usr/lib/nvidia:$LD_LIBRARY_PATH
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+```
+3. Use the proper renderer
+```
+export LIBGL_ALWAYS_SOFTWARE=0
+export OGRE_RTT_MODE=FBO
+```
+4. Test using:
+```
+glxinfo | grep "OpenGL renderer"
+```
+
+RTAB-Map repo (SLAM): https://github.com/introlab/rtabmap 
+
+
+
+
+
