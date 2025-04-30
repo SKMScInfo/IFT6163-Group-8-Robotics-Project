@@ -46,14 +46,14 @@ def get_config() -> ml_collections.ConfigDict:
 
   config.data = ml_collections.ConfigDict()
   # Path to the dataset downloaded from the GCP bucket
-  config.data.dataset_dir = "/tmp/dmc_vision_bench_data/dmc_vision_benchmark/dmc_vision_benchmark/"  # pylint: disable=line-too-long
+  config.data.dataset_dir = "/tmp/dmc_vision_bench_data/dmc_vision_benchmark/"  # pylint: disable=line-too-long
   config.data.domain_name = "cheetah"
   config.data.task_name = "run"
   config.data.policy_level = "expert"
   config.data.train_split = "train[:95%]"
   config.data.eval_split = "train[95%:]"
   config.data.difficulty = "none"
-  config.data.target_hidden = False
+  config.data.target_hidden = True
   config.data.dynamic_distractors = True
   config.data.episode_length = 200
   config.data.batch_size = config.learning.batch_size

@@ -26,6 +26,24 @@ The following setup is to be followed for making the project work on MacOS
 5. To run SLAM for out setup do :- LIBGL_ALWAYS_SOFTWARE=1 ros2 launch turtlebot4_ignition_bringup turtlebot4_ignition.launch.py slam:=true nav2:=true rviz:=true 
 It's important to use LIBGL_ALWAYS_SOFTWARE=1, as otherwise OPENGL was cause errors because of 2.3 version being needed, but VMs on MACOS only supporting till 2.1
 
+Fixing low RTF in gazebo while using a google cloud VM: 
+
+1. Add these to your .bashrc 
+2. Set environment variables: 
+```
+export LD_LIBRARY_PATH=/usr/lib/nvidia:$LD_LIBRARY_PATH
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+```
+3. Use the proper renderer
+```
+export LIBGL_ALWAYS_SOFTWARE=0
+export OGRE_RTT_MODE=FBO
+```
+4. Test using:
+```
+glxinfo | grep "OpenGL renderer"
+```
+
 RTAB-Map repo (SLAM): https://github.com/introlab/rtabmap 
 
 
