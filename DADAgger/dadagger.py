@@ -75,13 +75,13 @@ def sample_trajectories(model, env, num_trajectories=10, trajectory_length=100):
         trajectories.append(trajectory)
     return trajectories
 
-def get_variance(trajectories, model):
+def get_variance(trajectories, model, n):
     variances = []
     for state, _, _ in trajectories:
         state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0)
         predictions = []
         # Generate multiple dropout-based predictions
-        for _ in range(10):  # Number of dropout samples
+        for _ in range(n):
             prediction = model(state_tensor).detach().cpu().numpy()[0]
             predictions.append(prediction)
         variance = np.var(predictions, axis=0)
@@ -107,13 +107,11 @@ def train_model(model, dataset, num_epochs=1000):
     optimizer = optim.Adam(model.parameters(), lr=1e-4)
     criterion = nn.MSELoss()
     model.train()
-
     data_loader = DataLoader(dataset, batch_size=32, shuffle=True)
     for epoch in range(num_epochs):
         for states, actions in data_loader:
             states = states.float()
             actions = actions.float()
-
             optimizer.zero_grad()
             predicted_actions = model(states)
             loss = criterion(predicted_actions, actions)
@@ -124,28 +122,23 @@ def dadagger(env, n_iterations=25, alpha=0.1):
     action_dim = get_action_dim('ant')
     state_dim = get_state_dim('ant')
     D = []
-    models = []
     model = ModelWithDropout(state_dim, action_dim)
-    models.append(model)
     for i in tqdm(range(n_iterations)):
-        # print(f"Iteration {i+1}/{n_iterations}")
         # Sample trajectories
         trajectories = sample_trajectories(model, env)
         # Get variance of predictions
-        variances = get_variance(trajectories, model)
+        variances = get_variance(trajectories, model, n_iterations)
         # Filter states with highest variance
         filtered_states = filter_states(variances, alpha)
-        print(len(D))
         # Aggregate the new dataset
         aggregate_datasets(D, filtered_states, model)
-        print(len(D))
-        
         # Train the model on the aggregated dataset
         train_model(model, D)
     return model
 
 # Run DADAgger
 final_model = dadagger(env)
+# Run evaluation on validation split
 torch.save(final_model.state_dict(), 'model.pth')
 # eval_dataset = load_data('')
 env.close()
