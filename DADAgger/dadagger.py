@@ -94,12 +94,12 @@ def filter_states(variances, alpha=0.1):
     return variances[:num_to_keep]
 
 def aggregate_datasets(D, filtered_states, model):
-    # Assume the filtered states are (state, variance) tuples
+    # filtered states => (state, variance) tuples
     new_data = []
     for state, _ in filtered_states:
         state_tensor = torch.tensor(state, dtype=torch.float32).unsqueeze(0)
         # ADD PPO EXPERT HERE
-        action = model(state_tensor).detach().cpu().numpy()[0]  # Use the model's action as expert action
+        action = model(state_tensor).detach().cpu().numpy()[0]  #TODO
         new_data.append((state, action))
     D.extend(new_data)
 
